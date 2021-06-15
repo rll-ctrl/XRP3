@@ -5,28 +5,24 @@ import {
   OwnershipTransferred,
   Transfer
 } from "../generated/BEP20XRP/BEP20XRP"
-import { ExampleEntity } from "../generated/schema"
+import { Supply} from "../generated/schema"
 
 export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID
   // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
-
+  let entity = Supply.load(event.transaction.from.toHex())
+  const contract_address = '0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE'
+  let contract = BEP20XRP.bind(contract_address)
   // Entities only exist after they have been saved to the store;
   // `null` checks allow to create entities on demand
   if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+    entity = new Supply(event.transaction.from.toHex())
 
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
   }
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
 
   // Entity fields can be set based on event parameters
-  entity.owner = event.params.owner
-  entity.spender = event.params.spender
+  entity.total = contract.totalSupply()
 
   // Entities can be written to the store with `.save()`
   entity.save()
