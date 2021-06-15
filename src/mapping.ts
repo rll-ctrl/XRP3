@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt, Address } from "@graphprotocol/graph-ts"
 import {
   BEP20XRP,
   Approval,
@@ -11,15 +11,15 @@ export function handleApproval(event: Approval): void {
   // Entities can be loaded from the store using a string ID; this ID
   // needs to be unique across all entities of the same type
   let entity = Supply.load(event.transaction.from.toHex())
-  const contract_address = '0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE'
-  let contract = BEP20XRP.bind(contract_address)
+  
+  let contract = BEP20XRP.bind(Address.fromString('0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE'))
   // Entities only exist after they have been saved to the store;
   // `null` checks allow to create entities on demand
   if (entity == null) {
     entity = new Supply(event.transaction.from.toHex())
 
   }
-
+  
 
   // Entity fields can be set based on event parameters
   entity.total = contract.totalSupply()
